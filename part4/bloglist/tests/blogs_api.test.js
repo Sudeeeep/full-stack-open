@@ -60,7 +60,7 @@ test("blog post can be added", async () => {
     .expect(201)
     .expect("Content-Type", /application\/json/);
 
-  const blogsAfterAdding = await api.get("/api/blogs");
+  const blogsAfterAdding = await Blog.find({});
 
   const title = blogsAfterAdding.body.map((blog) => blog.title);
   const author = blogsAfterAdding.body.map((blog) => blog.author);
@@ -79,8 +79,9 @@ test("likes default to zero if it is missing", async () => {
 
   await api.post("/api/blogs").send(blogToAdd).expect(201);
 
-  const blogsAfterAdding = await api.get("/api/blogs");
-  const likes = blogsAfterAdding.body.map((blog) => blog.likes);
+  const blogsAfterAdding = await Blog.find({});
+
+  const likes = blogsAfterAdding.map((blog) => blog.likes);
 
   expect(likes).toContain(0);
 });
@@ -92,6 +93,42 @@ test("title or url are missing", async () => {
   };
 
   await api.post("/api/blogs").send(blogToAdd).expect(400);
+});
+
+test("delete blog with valid id", async () => {
+  const blogs = await Blog.find({});
+  const blogToDelete = blogs[0];
+
+  await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204);
+
+  const blogsAfterDelete = await Blog.find({});
+  const title = blogsAfterDelete.map((blog) => blog.title);
+
+  expect(blogsAfterDelete).toHaveLength(blogs.length - 1);
+  expect(title).not.toContain("ABCD");
+});
+
+test("update a blog", async () => {
+  const blogs = await Blog.find({});
+  console.log(blogs);
+  let blogToUpdate = {
+    title: blogs[0].title,
+    author: blogs[0].author,
+    url: blogs[0].url,
+    likes: 99,
+  };
+
+  console.log(blogToUpdate);
+
+  await api.put(`/api/blogs/${blogs[0].id}`).send(blogToUpdate).expect(200);
+
+  const blogsAfterUpdating = await Blog.find({});
+  console.log(blogsAfterUpdating);
+  const updatedBlog = blogsAfterUpdating.find(
+    (blog) => blog.title === blogToUpdate.title
+  );
+  console.log(updatedBlog);
+  expect(updatedBlog.likes).toBe(blogToUpdate.likes);
 });
 
 afterAll(async () => await mongoose.connection.close());
