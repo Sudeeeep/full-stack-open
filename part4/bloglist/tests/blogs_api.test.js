@@ -39,4 +39,11 @@ test("correct number of blogs are returned in JSON format", async () => {
   expect(response.body).toHaveLength(initialBlogList.length);
 });
 
+test("id exists", async () => {
+  const response = await api.get("/api/blogs");
+  response.body.map((r) => {
+    expect(r.id).toBeDefined();
+  });
+});
+
 afterAll(async () => await mongoose.connection.close());
