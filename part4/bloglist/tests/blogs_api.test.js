@@ -46,4 +46,28 @@ test("id exists", async () => {
   });
 });
 
+test("blog post can be added", async () => {
+  const blogToAdd = {
+    title: "TEST BLOG",
+    author: "QWERTY",
+    url: "blogs.com/QWERTY",
+    likes: 20,
+  };
+
+  await api
+    .post("/api/blogs")
+    .send(blogToAdd)
+    .expect(201)
+    .expect("Content-Type", /application\/json/);
+
+  const blogsAfterAdding = await api.get("/api/blogs");
+
+  const title = blogsAfterAdding.body.map((blog) => blog.title);
+  const author = blogsAfterAdding.body.map((blog) => blog.author);
+
+  expect(blogsAfterAdding.body).toHaveLength(initialBlogList.length + 1);
+  expect(title).toContain("TEST BLOG");
+  expect(author).toContain("QWERTY");
+});
+
 afterAll(async () => await mongoose.connection.close());
