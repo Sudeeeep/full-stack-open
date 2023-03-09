@@ -18,7 +18,10 @@ blogsRouter.post("/", async (request, response) => {
     const savedBlog = await blog.save();
     response.status(201).json(savedBlog);
   } catch (err) {
-    console.log(err);
+    console.log(err.name);
+    if (err.name === "ValidationError") {
+      response.status(400).json({ error: err.message });
+    }
   }
 });
 

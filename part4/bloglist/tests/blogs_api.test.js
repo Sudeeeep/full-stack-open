@@ -70,4 +70,28 @@ test("blog post can be added", async () => {
   expect(author).toContain("QWERTY");
 });
 
+test("likes default to zero if it is missing", async () => {
+  const blogToAdd = {
+    title: "TEST BLOG WITHOUT LIKES",
+    author: "NO LIKES",
+    url: "blogs.com/NOLIKES",
+  };
+
+  await api.post("/api/blogs").send(blogToAdd).expect(201);
+
+  const blogsAfterAdding = await api.get("/api/blogs");
+  const likes = blogsAfterAdding.body.map((blog) => blog.likes);
+
+  expect(likes).toContain(0);
+});
+
+test("title or url are missing", async () => {
+  const blogToAdd = {
+    author: "NO LIKES",
+    likes: 20,
+  };
+
+  await api.post("/api/blogs").send(blogToAdd).expect(400);
+});
+
 afterAll(async () => await mongoose.connection.close());
