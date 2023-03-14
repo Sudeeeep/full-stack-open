@@ -1,10 +1,12 @@
 const mongoose = require("mongoose");
 const supertest = require("supertest");
 const app = require("../app");
+const bcrypt = require("bcrypt");
 
 const api = supertest(app);
 
 const Blog = require("../models/blog");
+const User = require("../models/user");
 
 const initialBlogList = [
   {
@@ -131,4 +133,104 @@ test("update a blog", async () => {
   expect(updatedBlog.likes).toBe(blogToUpdate.likes);
 });
 
+describe("when there is initially one user in DB", () => {
+  beforeEach(async () => {
+    await User.deleteMany({});
+
+    const passwordHash = await bcrypt.hash("sekret", 10);
+    const user = new User({ username: "root", passwordHash });
+
+    await user.save();
+  });
+
+  test("user is successfully created with fresh username", async () => {
+    const usersAtStart = await User.find({});
+
+    const newUser = {
+      username: "mluukkai",
+      name: "Matti Luukkainen",
+      password: "salainen",
+    };
+
+    await api
+      .post("/api/users")
+      .send(newUser)
+      .expect(201)
+      .expect("Content-Type", /application\/json/);
+
+    const usersAtEnd = await User.find({});
+
+    expect(usersAtEnd).toHaveLength(usersAtStart.length + 1);
+
+    const usernames = usersAtEnd.map((user) => user.username);
+    expect(usernames).toContain("mluukkai");
+  });
+
+  test("user creation fails if username is already taken", async () => {
+    const usersAtStart = await User.find({});
+
+    const newUser = {
+      username: "root",
+      name: "hello",
+      password: "test123",
+    };
+
+    const result = await api
+      .post("/api/users")
+      .send(newUser)
+      .expect(400)
+      .expect("Content-Type", /application\/json/);
+
+    expect(result.body.error).toContain("expected `username` to be unique");
+
+    const usersAtEnd = await User.find({});
+    expect(usersAtEnd).toEqual(usersAtStart);
+  });
+
+  test("user creation fails if username is less than 3 characters long", async () => {
+    const usersAtStart = await User.find({});
+
+    const newUser = {
+      username: "ro",
+      name: "hello",
+      password: "test123",
+    };
+
+    const result = await api
+      .post("/api/users")
+      .send(newUser)
+      .expect(400)
+      .expect("Content-Type", /application\/json/);
+
+    expect(result.body.error).toContain(
+      "username: must be atleast 3 characters long"
+    );
+
+    const usersAtEnd = await User.find({});
+    expect(usersAtEnd).toEqual(usersAtStart);
+  });
+
+  test("user creation fails if password is less than 3 characters long", async () => {
+    const usersAtStart = await User.find({});
+
+    const newUser = {
+      username: "testuser",
+      name: "hello",
+      password: "te",
+    };
+
+    const result = await api
+      .post("/api/users")
+      .send(newUser)
+      .expect(400)
+      .expect("Content-Type", /application\/json/);
+
+    expect(result.body.error).toContain(
+      "password: must be atleast 3 characters long"
+    );
+
+    const usersAtEnd = await User.find({});
+    expect(usersAtEnd).toEqual(usersAtStart);
+  });
+});
 afterAll(async () => await mongoose.connection.close());
