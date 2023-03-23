@@ -7,6 +7,7 @@ const BlogForm = ({
   setError,
   setNotification,
   resetNotification,
+  blogRef,
 }) => {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
@@ -23,6 +24,7 @@ const BlogForm = ({
       setError(false);
       setNotification(`A new blog ${newBlog.title} by ${newBlog.author}`);
       resetNotification();
+      blogRef.current.toggleVisibility();
     } catch (err) {
       setError(true);
       setNotification(err.response.data.error);
