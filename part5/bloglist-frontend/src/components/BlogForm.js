@@ -20,7 +20,8 @@ const BlogForm = ({
       setTitle("");
       setAuthor("");
       setUrl("");
-      setBlogs([...blogs, newBlog]);
+      const allBlogs = await blogService.getAll();
+      setBlogs(allBlogs);
       setError(false);
       setNotification(`A new blog ${newBlog.title} by ${newBlog.author}`);
       resetNotification();
