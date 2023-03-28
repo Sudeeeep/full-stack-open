@@ -35,7 +35,6 @@ const App = () => {
       const user = await loginService.login({ username, password });
 
       window.localStorage.setItem("loggedInBlogUser", JSON.stringify(user));
-      console.log(user.token);
       blogService.setToken(user.token);
 
       setUser(user);
@@ -43,7 +42,6 @@ const App = () => {
       setPassword("");
       setError(false);
     } catch (err) {
-      console.log(err.response.data);
       setError(true);
       setNotification(err.response.data.error);
       resetNotification();
@@ -97,14 +95,20 @@ const App = () => {
           blogRef={blogRef}
         />
       </Togglable>
-      {blogs.map((blog) => (
-        <Blog
-          key={blog.id}
-          currentBlog={blog}
-          blogs={blogs}
-          setBlogs={setBlogs}
-        />
-      ))}
+      {blogs
+        .sort((a, b) => (a.likes < b.likes ? 1 : -1))
+        .map((blog) => (
+          <Blog
+            key={blog.id}
+            username={user.username}
+            currentBlog={blog}
+            blogs={blogs}
+            setBlogs={setBlogs}
+            setError={setError}
+            setNotification={setNotification}
+            resetNotification={resetNotification}
+          />
+        ))}
     </div>
   );
 };

@@ -1,15 +1,25 @@
 import { useState } from "react";
 import blogService from "../services/blogs";
 
-const Blog = ({ currentBlog, blogs, setBlogs }) => {
+const Blog = ({
+  username,
+  currentBlog,
+  blogs,
+  setBlogs,
+  setError,
+  setNotification,
+  resetNotification,
+}) => {
   const [moreDetails, setMoreDetails] = useState(false);
 
+  const displayRemoveButton =
+    username === currentBlog.user.username ? true : false;
+
   const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
+    padding: "10px 5px 5px 5px",
     border: "solid",
     borderWidth: 1,
-    marginBottom: 5,
+    margin: "10px 0 10px 0",
   };
 
   const handleLike = async () => {
@@ -19,13 +29,31 @@ const Blog = ({ currentBlog, blogs, setBlogs }) => {
       url: currentBlog.url,
       likes: currentBlog.likes + 1,
     };
+    try {
+      await blogService.update(currentBlog.id, updatedBlog);
+      const allBlogs = await blogService.getAll();
+      setBlogs(allBlogs);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
-    console.log(currentBlog.id);
-
-    const newBlog = await blogService.update(currentBlog.id, updatedBlog);
-    console.log(newBlog);
-    const allBlogs = await blogService.getAll();
-    setBlogs(allBlogs);
+  const handleDelete = async () => {
+    if (
+      window.confirm(`Remove blog ${currentBlog.name} by ${currentBlog.author}`)
+    ) {
+      try {
+        await blogService.remove(currentBlog.id, currentBlog);
+        const blogsAfterRemove = blogs.filter(
+          (blog) => blog.id !== currentBlog.id
+        );
+        setBlogs(blogsAfterRemove);
+      } catch (err) {
+        setError(true);
+        setNotification(err.response.data.error);
+        resetNotification();
+      }
+    }
   };
 
   if (!moreDetails) {
@@ -46,9 +74,38 @@ const Blog = ({ currentBlog, blogs, setBlogs }) => {
           {currentBlog.title} {currentBlog.author}{" "}
           <button onClick={() => setMoreDetails(false)}>hide</button> <br />
           {currentBlog.url} <br />
-          likes {currentBlog.likes} <button onClick={handleLike}>like</button>{" "}
+          likes {currentBlog.likes}{" "}
+          <button
+            onClick={handleLike}
+            style={{
+              backgroundColor: "#4286F6",
+              color: "white",
+              border: "none",
+              borderRadius: "0.25rem",
+              padding: "0.25em 0.5em",
+            }}
+          >
+            like
+          </button>{" "}
           <br />
           {currentBlog.user.name}
+          <br />
+          <div>
+            {displayRemoveButton && (
+              <button
+                onClick={handleDelete}
+                style={{
+                  backgroundColor: "#cc243c",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "0.25rem",
+                  padding: "0.25em",
+                }}
+              >
+                Remove
+              </button>
+            )}
+          </div>
         </div>
       </div>
     );
