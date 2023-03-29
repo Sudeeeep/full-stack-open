@@ -87,7 +87,6 @@ const App = () => {
       </h3>
       <Togglable buttonLabel="New Blog" ref={blogRef}>
         <BlogForm
-          blogs={blogs}
           setBlogs={setBlogs}
           setError={setError}
           setNotification={setNotification}

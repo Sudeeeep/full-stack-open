@@ -28,7 +28,7 @@ const update = async (id, updatedBlog) => {
   return response.data;
 };
 
-const remove = async (id, blogToDelete) => {
+const remove = async (id) => {
   const config = {
     headers: {
       authorization: token,
@@ -39,5 +39,4 @@ const remove = async (id, blogToDelete) => {
   return response.data;
 };
 
-// eslint-disable-next-line import/no-anonymous-default-export
 export default { getAll, create, setToken, update, remove };
