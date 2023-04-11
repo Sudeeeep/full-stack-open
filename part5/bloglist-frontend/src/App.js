@@ -33,6 +33,7 @@ const App = () => {
     e.preventDefault();
     try {
       const user = await loginService.login({ username, password });
+      console.log(user);
 
       window.localStorage.setItem("loggedInBlogUser", JSON.stringify(user));
       blogService.setToken(user.token);
@@ -60,6 +61,30 @@ const App = () => {
       setNotification(null);
       setError(false);
     }, 5000);
+  };
+
+  const likeBlog = async (id, updatedBlog) => {
+    try {
+      await blogService.update(id, updatedBlog);
+      const allBlogs = await blogService.getAll();
+      setBlogs(allBlogs);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const deleteBlog = async (id, currentBlog) => {
+    try {
+      await blogService.remove(id, currentBlog);
+      const blogsAfterRemove = blogs.filter(
+        (blog) => blog.id !== currentBlog.id
+      );
+      setBlogs(blogsAfterRemove);
+    } catch (err) {
+      setError(true);
+      setNotification(err.response.data.error);
+      resetNotification();
+    }
   };
 
   if (user === null) {
@@ -101,11 +126,8 @@ const App = () => {
             key={blog.id}
             username={user.username}
             currentBlog={blog}
-            blogs={blogs}
-            setBlogs={setBlogs}
-            setError={setError}
-            setNotification={setNotification}
-            resetNotification={resetNotification}
+            likeBlog={likeBlog}
+            deleteBlog={deleteBlog}
           />
         ))}
     </div>

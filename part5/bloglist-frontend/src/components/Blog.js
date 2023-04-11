@@ -1,15 +1,7 @@
+import React from "react";
 import { useState } from "react";
-import blogService from "../services/blogs";
 
-const Blog = ({
-  username,
-  currentBlog,
-  blogs,
-  setBlogs,
-  setError,
-  setNotification,
-  resetNotification,
-}) => {
+const Blog = ({ username, currentBlog, likeBlog, deleteBlog }) => {
   const [moreDetails, setMoreDetails] = useState(false);
 
   const displayRemoveButton =
@@ -29,39 +21,26 @@ const Blog = ({
       url: currentBlog.url,
       likes: currentBlog.likes + 1,
     };
-    try {
-      await blogService.update(currentBlog.id, updatedBlog);
-      const allBlogs = await blogService.getAll();
-      setBlogs(allBlogs);
-    } catch (err) {
-      console.log(err);
-    }
+    likeBlog(currentBlog.id, updatedBlog);
   };
 
   const handleDelete = async () => {
     if (
       window.confirm(`Remove blog ${currentBlog.name} by ${currentBlog.author}`)
     ) {
-      try {
-        await blogService.remove(currentBlog.id, currentBlog);
-        const blogsAfterRemove = blogs.filter(
-          (blog) => blog.id !== currentBlog.id
-        );
-        setBlogs(blogsAfterRemove);
-      } catch (err) {
-        setError(true);
-        setNotification(err.response.data.error);
-        resetNotification();
-      }
+      deleteBlog(currentBlog.id, currentBlog);
     }
   };
 
   if (!moreDetails) {
     return (
       <div style={blogStyle}>
-        <div>
-          {currentBlog.title} {currentBlog.author}
-          <button onClick={() => setMoreDetails(true)}>view</button>
+        <div className="blogDiv">
+          <span className="title">{currentBlog.title}</span>{" "}
+          <span className="author">{currentBlog.author}</span>
+          <button className="viewBtn" onClick={() => setMoreDetails(true)}>
+            view
+          </button>
         </div>
       </div>
     );
@@ -71,11 +50,13 @@ const Blog = ({
     return (
       <div style={blogStyle}>
         <div>
-          {currentBlog.title} {currentBlog.author}{" "}
+          <span className="title">{currentBlog.title}</span>{" "}
+          <span className="author">{currentBlog.author}</span>
           <button onClick={() => setMoreDetails(false)}>hide</button> <br />
-          {currentBlog.url} <br />
-          likes {currentBlog.likes}{" "}
+          <div className="url">{currentBlog.url}</div>
+          <span className="likes"> likes {currentBlog.likes}</span>
           <button
+            className="likeBtn"
             onClick={handleLike}
             style={{
               backgroundColor: "#4286F6",
@@ -88,7 +69,7 @@ const Blog = ({
             like
           </button>{" "}
           <br />
-          {currentBlog.user.name}
+          <span className="user">{currentBlog.user.name}</span>
           <br />
           <div>
             {displayRemoveButton && (
