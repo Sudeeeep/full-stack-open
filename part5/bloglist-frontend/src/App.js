@@ -63,6 +63,22 @@ const App = () => {
     }, 5000);
   };
 
+  const createBlog = async (title, author, url) => {
+    try {
+      const newBlog = await blogService.create({ title, author, url });
+      const allBlogs = await blogService.getAll();
+      setBlogs(allBlogs);
+      setError(false);
+      setNotification(`A new blog ${newBlog.title} by ${newBlog.author}`);
+      resetNotification();
+      blogRef.current.toggleVisibility();
+    } catch (err) {
+      setError(true);
+      setNotification(err.response.data.error);
+      resetNotification();
+    }
+  };
+
   const likeBlog = async (id, updatedBlog) => {
     try {
       await blogService.update(id, updatedBlog);
@@ -111,13 +127,7 @@ const App = () => {
         {user.name} logged in <button onClick={handleLogOut}>logout</button>
       </h3>
       <Togglable buttonLabel="New Blog" ref={blogRef}>
-        <BlogForm
-          setBlogs={setBlogs}
-          setError={setError}
-          setNotification={setNotification}
-          resetNotification={resetNotification}
-          blogRef={blogRef}
-        />
+        <BlogForm createBlog={createBlog} />
       </Togglable>
       {blogs
         .sort((a, b) => (a.likes < b.likes ? 1 : -1))

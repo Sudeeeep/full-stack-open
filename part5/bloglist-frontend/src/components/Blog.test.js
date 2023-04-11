@@ -20,10 +20,10 @@ describe("<Blog/>", () => {
   };
 
   let container;
-  const likeMockHandler = jest.fn();
+  const likeHandler = jest.fn();
   beforeEach(() => {
     container = render(
-      <Blog currentBlog={blog} likeBlog={likeMockHandler} />
+      <Blog currentBlog={blog} likeBlog={likeHandler} />
     ).container;
   });
 
@@ -64,6 +64,6 @@ describe("<Blog/>", () => {
     await user.click(likeBtn);
     await user.click(likeBtn);
 
-    expect(likeMockHandler.mock.calls).toHaveLength(2);
+    expect(likeHandler.mock.calls).toHaveLength(2);
   });
 });

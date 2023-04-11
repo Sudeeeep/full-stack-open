@@ -1,35 +1,17 @@
+import React from "react";
 import { useState } from "react";
-import blogService from "../services/blogs";
 
-const BlogForm = ({
-  setBlogs,
-  setError,
-  setNotification,
-  resetNotification,
-  blogRef,
-}) => {
+const BlogForm = ({ createBlog }) => {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [url, setUrl] = useState("");
 
   const addBlog = async (e) => {
     e.preventDefault();
-    try {
-      const newBlog = await blogService.create({ title, author, url });
-      setTitle("");
-      setAuthor("");
-      setUrl("");
-      const allBlogs = await blogService.getAll();
-      setBlogs(allBlogs);
-      setError(false);
-      setNotification(`A new blog ${newBlog.title} by ${newBlog.author}`);
-      resetNotification();
-      blogRef.current.toggleVisibility();
-    } catch (err) {
-      setError(true);
-      setNotification(err.response.data.error);
-      resetNotification();
-    }
+    createBlog(title, author, url);
+    setTitle("");
+    setAuthor("");
+    setUrl("");
   };
   return (
     <div>
@@ -41,6 +23,7 @@ const BlogForm = ({
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
+            className="titleInput"
           />
         </div>
         <div>
@@ -49,6 +32,7 @@ const BlogForm = ({
             type="text"
             value={author}
             onChange={(e) => setAuthor(e.target.value)}
+            className="authorInput"
           />
         </div>
         <div>
@@ -57,6 +41,7 @@ const BlogForm = ({
             type="text"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
+            className="urlInput"
           />
         </div>
         <button type="submit">create</button>
