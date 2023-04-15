@@ -7,6 +7,9 @@ const Blog = ({ username, currentBlog, likeBlog, deleteBlog }) => {
   const displayRemoveButton =
     username === currentBlog.user.username ? true : false;
 
+  console.log(username);
+  console.log(currentBlog);
+
   const blogStyle = {
     padding: "10px 5px 5px 5px",
     border: "solid",
