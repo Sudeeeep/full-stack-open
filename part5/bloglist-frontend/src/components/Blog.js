@@ -7,9 +7,6 @@ const Blog = ({ username, currentBlog, likeBlog, deleteBlog }) => {
   const displayRemoveButton =
     username === currentBlog.user.username ? true : false;
 
-  console.log(username);
-  console.log(currentBlog);
-
   const blogStyle = {
     padding: "10px 5px 5px 5px",
     border: "solid",
@@ -31,6 +28,8 @@ const Blog = ({ username, currentBlog, likeBlog, deleteBlog }) => {
     if (
       window.confirm(`Remove blog ${currentBlog.name} by ${currentBlog.author}`)
     ) {
+      console.log(currentBlog);
+      console.log(localStorage.getItem("loggedInBlogUser"));
       deleteBlog(currentBlog.id, currentBlog);
     }
   };
@@ -52,7 +51,7 @@ const Blog = ({ username, currentBlog, likeBlog, deleteBlog }) => {
   if (moreDetails) {
     return (
       <div style={blogStyle}>
-        <div>
+        <div className="detailedBlog">
           <span className="title">{currentBlog.title}</span>{" "}
           <span className="author">{currentBlog.author}</span>
           <button onClick={() => setMoreDetails(false)}>hide</button> <br />
@@ -77,6 +76,7 @@ const Blog = ({ username, currentBlog, likeBlog, deleteBlog }) => {
           <div>
             {displayRemoveButton && (
               <button
+                className="deleteBtn"
                 onClick={handleDelete}
                 style={{
                   backgroundColor: "#cc243c",
