@@ -1,5 +1,5 @@
 import { useDispatch } from "react-redux";
-import { filterAction } from "../reducers/filterReducer";
+import { filter } from "../reducers/filterReducer";
 
 const Filter = () => {
   const dispatch = useDispatch();
@@ -7,7 +7,7 @@ const Filter = () => {
   const handleChange = (event) => {
     // input-field value is in variable event.target.value
     console.log(event.target.value);
-    dispatch(filterAction(event.target.value));
+    dispatch(filter(event.target.value));
   };
   const style = {
     marginBottom: 10,

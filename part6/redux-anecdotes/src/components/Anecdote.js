@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from "react-redux";
-import { incrementVote } from "../reducers/anecdoteReducer";
+import { vote } from "../reducers/anecdoteReducer";
 
 const Anecdote = () => {
   const anecdotes = useSelector((state) => {
@@ -16,9 +16,7 @@ const Anecdote = () => {
           <div>{anecdote.content}</div>
           <div>
             has {anecdote.votes}
-            <button onClick={() => dispatch(incrementVote(anecdote.id))}>
-              vote
-            </button>
+            <button onClick={() => dispatch(vote(anecdote.id))}>vote</button>
           </div>
         </div>
       ))}
