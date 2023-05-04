@@ -6,17 +6,33 @@ import {
   getAnecdotes,
   updateAnecdote,
 } from "./services/anecdote";
+import { useContext } from "react";
+import AnecdoteContext from "./AnecdoteContext";
 
 const App = () => {
   const queryClient = useQueryClient();
+
+  const [notification, dispatchNotification] = useContext(AnecdoteContext);
+
   const handleVote = (anecdote) => {
     voteMutation.mutate(anecdote);
+    dispatchNotification({ type: "VOTE", payload: anecdote });
+    setTimeout(() => {
+      dispatchNotification({ type: "RESET" });
+    }, 5000);
   };
 
   const addAnecdoteMutation = useMutation(createAnecdote, {
     onSuccess: (newAnecdote) => {
       const anecdotes = queryClient.getQueryData(["anecdotes"]);
       queryClient.setQueryData(["anecdotes"], [...anecdotes, newAnecdote]);
+    },
+    onError: (error) => {
+      console.log(error.response.data.error);
+      dispatchNotification({
+        type: "ERROR",
+        payload: error.response.data.error,
+      });
     },
   });
 
@@ -34,8 +50,6 @@ const App = () => {
 
   const anecdotes = useQuery(["anecdotes"], getAnecdotes);
 
-  console.log(anecdotes);
-
   if (anecdotes.isLoading) {
     return <div>LOADING ANECDOTES...</div>;
   }
@@ -48,7 +62,8 @@ const App = () => {
     <div>
       <h3>Anecdote app</h3>
 
-      <Notification />
+      {notification !== null && <Notification />}
+
       <AnecdoteForm addAnecdoteMutation={addAnecdoteMutation} />
 
       {anecdotes.data.map((anecdote) => (
