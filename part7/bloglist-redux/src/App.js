@@ -57,7 +57,7 @@ const App = () => {
 
   const handleLogOut = () => {
     window.localStorage.removeItem("loggedInBlogUser");
-    setUser(null);
+    dispatch(setUser(null));
   };
 
   const resetNotification = () => {
