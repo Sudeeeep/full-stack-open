@@ -1,4 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom";
+import { Button } from "./style/Button.styled";
 
 const BlogDetails = ({ blogs, likeBlog, user, deleteBlog, addComment }) => {
   const { id } = useParams();
@@ -33,7 +34,6 @@ const BlogDetails = ({ blogs, likeBlog, user, deleteBlog, addComment }) => {
 
   const handleComment = (e) => {
     e.preventDefault();
-
     const updatedBlog = {
       title: selectedBlog[0].title,
       author: selectedBlog[0].author,
@@ -46,59 +46,64 @@ const BlogDetails = ({ blogs, likeBlog, user, deleteBlog, addComment }) => {
   };
 
   return (
-    <div>
+    <>
       <h2 style={{ marginBottom: "1rem" }}>
         {selectedBlog[0].title} by {selectedBlog[0].author}
       </h2>
-      <a href={selectedBlog[0].url} target="_blank" rel="noreferrer">
-        {selectedBlog[0].url}
-      </a>
-      <div>
-        <span>{selectedBlog[0].likes} likes</span>{" "}
-        <button
-          className="likeBtn"
-          onClick={handleLike}
-          style={{
-            backgroundColor: "#4286F6",
-            color: "white",
-            border: "none",
-            borderRadius: "0.25rem",
-            padding: "0.25em 0.5em",
-          }}
-        >
-          like
-        </button>
+      <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+        <a href={selectedBlog[0].url} target="_blank" rel="noreferrer">
+          {selectedBlog[0].url}
+        </a>
+        <div>
+          <span>{selectedBlog[0].likes} likes</span>{" "}
+          <Button
+            className="likeBtn"
+            onClick={handleLike}
+            style={{
+              padding: "0.35rem 0.75rem",
+              margin: "0 0.25rem",
+            }}
+          >
+            like
+          </Button>
+        </div>
         <p style={{ marginTop: 0 }}>added by {selectedBlog[0].user.name}</p>
       </div>
 
       <div>
         {displayRemoveButton && (
-          <button
+          <Button
+            $secondary
             className="deleteBtn"
             onClick={handleDelete}
-            style={{
-              backgroundColor: "#cc243c",
-              color: "white",
-              border: "none",
-              borderRadius: "0.25rem",
-              padding: "0.25em",
-            }}
+            // style={{
+            //   backgroundColor: "#cc243c",
+            //   color: "white",
+            //   border: "none",
+            //   borderRadius: "0.25rem",
+            //   padding: "0.25em",
+            // }}
           >
             Remove
-          </button>
+          </Button>
         )}
       </div>
       <h3>Comments</h3>
       <form onSubmit={handleComment}>
-        <input name="comments" type="text" placeholder="Add a comment..." />
-        <button>add comment</button>
+        <input
+          style={{ padding: "0.25rem", margin: "0 0.25rem" }}
+          name="comments"
+          type="text"
+          placeholder="Add a comment..."
+        />
+        <Button>add comment</Button>
       </form>
       <ul>
         {selectedBlog[0].comments.map((comment, index) => {
           return <li key={index}>{comment}</li>;
         })}
       </ul>
-    </div>
+    </>
   );
 };
 

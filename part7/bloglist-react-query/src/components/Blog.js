@@ -13,7 +13,11 @@ const Blog = ({ currentBlog }) => {
   return (
     <div style={blogStyle}>
       <div className="blogDiv">
-        <Link className="title" to={`/blogs/${currentBlog.id}`}>
+        <Link
+          style={{ textDecoration: "none" }}
+          className="title"
+          to={`/blogs/${currentBlog.id}`}
+        >
           {currentBlog.title} by {currentBlog.author}
         </Link>{" "}
       </div>

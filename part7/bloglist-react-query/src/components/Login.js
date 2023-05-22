@@ -1,4 +1,5 @@
 import Notification from "./Notification";
+import { Button } from "./style/Button.styled";
 
 const Login = ({
   username,
@@ -22,6 +23,7 @@ const Login = ({
             value={username}
             name="username"
             onChange={(e) => setUsername(e.target.value)}
+            style={{ margin: "0.25rem" }}
           />
         </div>
 
@@ -33,11 +35,12 @@ const Login = ({
             value={password}
             name="password"
             onChange={(e) => setPassword(e.target.value)}
+            style={{ margin: "0.25rem" }}
           />
         </div>
-        <button id="submit-btn" type="submit">
+        <Button id="submit-btn" type="submit">
           login
-        </button>
+        </Button>
       </form>
     </div>
   );

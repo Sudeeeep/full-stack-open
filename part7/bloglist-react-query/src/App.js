@@ -11,6 +11,11 @@ import Users from "./components/Users";
 import Home from "./components/Home";
 import User from "./components/User";
 import BlogDetails from "./components/blogDetails";
+import { Header } from "./components/style/Header.styled";
+import { GlobalStyle } from "./components/style/Global";
+import { Nav } from "./components/style/Nav.styled";
+import { Container } from "./components/style/Container.style";
+import { Button } from "./components/style/Button.styled";
 
 const App = () => {
   const [username, setUsername] = useState("");
@@ -151,19 +156,30 @@ const App = () => {
     }
   };
 
+  const removeLinkStyle = {
+    textDecoration: "none",
+    color: "#fef6ff",
+  };
+
   if (user === null) {
     return (
-      <div>
-        <Login
-          username={username}
-          password={password}
-          setUsername={setUsername}
-          setPassword={setPassword}
-          handleLogin={handleLogin}
-          notification={notification}
-          error={error}
-        />
-      </div>
+      <>
+        <GlobalStyle />
+        <Header>
+          <h2>Blog App</h2>
+        </Header>
+        <Container>
+          <Login
+            username={username}
+            password={password}
+            setUsername={setUsername}
+            setPassword={setPassword}
+            handleLogin={handleLogin}
+            notification={notification}
+            error={error}
+          />
+        </Container>
+      </>
     );
   }
 
@@ -172,44 +188,54 @@ const App = () => {
   }
 
   return (
-    <div>
-      <nav style={{ display: "flex", gap: "1rem" }}>
-        <Link to="/">Blogs</Link>
-        <Link to="/users">Users</Link>
-        <div>
-          <span style={{ fontWeight: "bold" }}>{user.name} logged in </span>
-          <button id="logout-btn" onClick={handleLogOut}>
-            logout
-          </button>
-        </div>
-      </nav>
+    <>
+      <GlobalStyle />
+      <Header>
+        <h2>Blog App</h2>
+        <Nav>
+          <Link style={removeLinkStyle} to="/">
+            Blogs
+          </Link>
+          <Link style={removeLinkStyle} to="/users">
+            Users
+          </Link>
 
-      <h2>Blog App</h2>
-      <Notification message={notification} isError={error} />
+          <div>
+            <span>{user.name} logged in </span>
+            <Button $secondary id="logout-btn" onClick={handleLogOut}>
+              Logout
+            </Button>
+          </div>
+        </Nav>
+      </Header>
 
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <Home blogs={blogs} blogRef={blogRef} createBlog={createBlog} />
-          }
-        />
-        <Route
-          path="/blogs/:id"
-          element={
-            <BlogDetails
-              blogs={blogs.data}
-              likeBlog={likeBlog}
-              deleteBlog={deleteBlog}
-              addComment={addComment}
-              user={user}
-            />
-          }
-        />
-        <Route path="/users/:id" element={<User />} />
-        <Route path="/users" element={<Users />} />
-      </Routes>
-    </div>
+      <Container>
+        <Notification message={notification} isError={error} />
+
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <Home blogs={blogs} blogRef={blogRef} createBlog={createBlog} />
+            }
+          />
+          <Route
+            path="/blogs/:id"
+            element={
+              <BlogDetails
+                blogs={blogs.data}
+                likeBlog={likeBlog}
+                deleteBlog={deleteBlog}
+                addComment={addComment}
+                user={user}
+              />
+            }
+          />
+          <Route path="/users/:id" element={<User />} />
+          <Route path="/users" element={<Users />} />
+        </Routes>
+      </Container>
+    </>
   );
 };
 

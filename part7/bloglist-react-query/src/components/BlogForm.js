@@ -1,5 +1,6 @@
 import React from "react";
 import { useState } from "react";
+import { Button } from "./style/Button.styled";
 
 const BlogForm = ({ createBlog }) => {
   const [title, setTitle] = useState("");
@@ -25,6 +26,7 @@ const BlogForm = ({ createBlog }) => {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             className="titleInput"
+            style={{ marginBottom: "0.5rem" }}
           />
         </div>
         <div>
@@ -35,6 +37,7 @@ const BlogForm = ({ createBlog }) => {
             value={author}
             onChange={(e) => setAuthor(e.target.value)}
             className="authorInput"
+            style={{ marginBottom: "0.5rem" }}
           />
         </div>
         <div>
@@ -45,11 +48,16 @@ const BlogForm = ({ createBlog }) => {
             value={url}
             onChange={(e) => setUrl(e.target.value)}
             className="urlInput"
+            style={{ marginBottom: "0.5rem" }}
           />
         </div>
-        <button id="create-blog-btn" type="submit">
+        <Button
+          style={{ margin: "0.25rem" }}
+          id="create-blog-btn"
+          type="submit"
+        >
           create
-        </button>
+        </Button>
       </form>
     </div>
   );
