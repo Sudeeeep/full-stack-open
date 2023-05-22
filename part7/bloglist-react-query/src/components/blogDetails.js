@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 
-const BlogDetails = ({ blogs, likeBlog, user, deleteBlog }) => {
+const BlogDetails = ({ blogs, likeBlog, user, deleteBlog, addComment }) => {
   const { id } = useParams();
   const navigate = useNavigate();
   const selectedBlog = blogs.filter((blog) => blog.id === id);
@@ -29,6 +29,20 @@ const BlogDetails = ({ blogs, likeBlog, user, deleteBlog }) => {
       deleteBlog(selectedBlog[0].id);
       navigate("/");
     }
+  };
+
+  const handleComment = (e) => {
+    e.preventDefault();
+
+    const updatedBlog = {
+      title: selectedBlog[0].title,
+      author: selectedBlog[0].author,
+      url: selectedBlog[0].url,
+      likes: selectedBlog[0].likes,
+      comments: selectedBlog[0].comments.concat(e.target.comments.value),
+    };
+    addComment(selectedBlog[0].id, updatedBlog);
+    e.target.comments.value = "";
   };
 
   return (
@@ -74,6 +88,16 @@ const BlogDetails = ({ blogs, likeBlog, user, deleteBlog }) => {
           </button>
         )}
       </div>
+      <h3>Comments</h3>
+      <form onSubmit={handleComment}>
+        <input name="comments" type="text" placeholder="Add a comment..." />
+        <button>add comment</button>
+      </form>
+      <ul>
+        {selectedBlog[0].comments.map((comment, index) => {
+          return <li key={index}>{comment}</li>;
+        })}
+      </ul>
     </div>
   );
 };

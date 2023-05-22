@@ -73,6 +73,15 @@ const App = () => {
     },
   });
 
+  const commentBlogMutation = useMutation(blogService.addComment, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(["blogs"]);
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+  });
+
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
@@ -110,7 +119,7 @@ const App = () => {
     }, 5000);
   };
 
-  const createBlog = async (title, author, url) => {
+  const createBlog = (title, author, url) => {
     createBlogMutation.mutate({ title, author, url });
     setError(false);
     dispatchNotification({
@@ -121,7 +130,7 @@ const App = () => {
     blogRef.current.toggleVisibility();
   };
 
-  const likeBlog = async (id, updatedBlog) => {
+  const likeBlog = (id, updatedBlog) => {
     try {
       likeBlogMutation.mutate({ id, updatedBlog });
     } catch (err) {
@@ -129,8 +138,17 @@ const App = () => {
     }
   };
 
-  const deleteBlog = async (id) => {
+  const deleteBlog = (id) => {
     deleteBlogMutation.mutate(id);
+  };
+
+  const addComment = (id, updatedBlog) => {
+    try {
+      console.log(id);
+      commentBlogMutation.mutate({ id, updatedBlog });
+    } catch (err) {
+      console.log(err.response.data);
+    }
   };
 
   if (user === null) {
@@ -183,6 +201,7 @@ const App = () => {
               blogs={blogs.data}
               likeBlog={likeBlog}
               deleteBlog={deleteBlog}
+              addComment={addComment}
               user={user}
             />
           }
