@@ -1,19 +1,20 @@
 import { useState, useEffect, useRef, useReducer } from "react";
-import Blog from "./components/Blog";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 import Login from "./components/Login";
 import Notification from "./components/Notification";
-import BlogForm from "./components/BlogForm";
-import Togglable from "./components/Togglable";
 import notificationReducer from "./reducers/notification";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import userReducer from "./reducers/users";
+import { Link, Route, Routes } from "react-router-dom";
+import Users from "./components/Users";
+import Home from "./components/Home";
+import User from "./components/User";
+import BlogDetails from "./components/blogDetails";
 
 const App = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  // const [user, setUser] = useState(null);
   const [error, setError] = useState(false);
   const [notification, dispatchNotification] = useReducer(
     notificationReducer,
@@ -154,28 +155,41 @@ const App = () => {
 
   return (
     <div>
-      <h2>blogs</h2>
+      <nav style={{ display: "flex", gap: "1rem" }}>
+        <Link to="/">Blogs</Link>
+        <Link to="/users">Users</Link>
+        <div>
+          <span style={{ fontWeight: "bold" }}>{user.name} logged in </span>
+          <button id="logout-btn" onClick={handleLogOut}>
+            logout
+          </button>
+        </div>
+      </nav>
+
+      <h2>Blog App</h2>
       <Notification message={notification} isError={error} />
-      <h3>
-        {user.name} logged in{" "}
-        <button id="logout-btn" onClick={handleLogOut}>
-          logout
-        </button>
-      </h3>
-      <Togglable buttonLabel="New Blog" ref={blogRef}>
-        <BlogForm createBlog={createBlog} />
-      </Togglable>
-      {blogs.data
-        .sort((a, b) => (a.likes < b.likes ? 1 : -1))
-        .map((blog) => (
-          <Blog
-            key={blog.id}
-            username={user.username}
-            currentBlog={blog}
-            likeBlog={likeBlog}
-            deleteBlog={deleteBlog}
-          />
-        ))}
+
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <Home blogs={blogs} blogRef={blogRef} createBlog={createBlog} />
+          }
+        />
+        <Route
+          path="/blogs/:id"
+          element={
+            <BlogDetails
+              blogs={blogs.data}
+              likeBlog={likeBlog}
+              deleteBlog={deleteBlog}
+              user={user}
+            />
+          }
+        />
+        <Route path="/users/:id" element={<User />} />
+        <Route path="/users" element={<Users />} />
+      </Routes>
     </div>
   );
 };
