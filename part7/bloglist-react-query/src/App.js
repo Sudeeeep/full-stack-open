@@ -16,6 +16,7 @@ import { GlobalStyle } from "./components/style/Global";
 import { Nav } from "./components/style/Nav.styled";
 import { Container } from "./components/style/Container.style";
 import { Button } from "./components/style/Button.styled";
+import { Footer } from "./components/style/Footer.styled";
 
 const App = () => {
   const [username, setUsername] = useState("");
@@ -235,6 +236,11 @@ const App = () => {
           <Route path="/users" element={<Users />} />
         </Routes>
       </Container>
+      <Footer>
+        <Link to="/">home</Link>
+        <Link to="/">blogs</Link>
+        <Link to="/users">users</Link>
+      </Footer>
     </>
   );
 };

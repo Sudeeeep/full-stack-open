@@ -25,7 +25,12 @@ const Users = () => {
               {users.data.map((user) => {
                 return (
                   <div key={user.id}>
-                    <Link to={`/users/${user.id}`}>{user.name}</Link>
+                    <Link
+                      style={{ textDecoration: "none" }}
+                      to={`/users/${user.id}`}
+                    >
+                      {user.name}
+                    </Link>
                   </div>
                 );
               })}
