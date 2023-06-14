@@ -17,7 +17,11 @@ const CREATE_BOOK = gql`
       genres: $genres
     ) {
       title
-      author
+      author {
+        name
+        born
+        bookCount
+      }
       published
       genres
     }
@@ -55,6 +59,7 @@ const NewBook = (props) => {
     setAuthor("");
     setGenres([]);
     setGenre("");
+    props.setPage("books");
   };
 
   const addGenre = () => {
