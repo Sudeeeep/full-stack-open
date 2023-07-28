@@ -1,10 +1,10 @@
-import { CourseParts } from "../types";
+import { CoursePart } from "../types";
 
-export const Total = (props: CourseParts) => {
+export const Total = ({ courseParts }: { courseParts: CoursePart[] }) => {
   return (
     <p>
       Number of exercises{" "}
-      {props.parts.reduce((carry, part) => carry + part.exerciseCount, 0)}
+      {courseParts.reduce((carry, part) => carry + part.exerciseCount, 0)}
     </p>
   );
 };

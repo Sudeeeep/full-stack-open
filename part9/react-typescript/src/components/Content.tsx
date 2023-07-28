@@ -1,18 +1,19 @@
-import { CourseParts } from "../types";
+import { CoursePart } from "../types";
+import { Part } from "./Part";
 
-export const Content = (props: CourseParts) => {
-  console.log(props);
+export const Content = ({ courseParts }: { courseParts: CoursePart[] }) => {
+  console.log(courseParts);
   return (
     <div>
-      <p>
-        {props.parts[0].name} {props.parts[0].exerciseCount}
-      </p>
-      <p>
-        {props.parts[1].name} {props.parts[1].exerciseCount}
-      </p>
-      <p>
-        {props.parts[2].name} {props.parts[2].exerciseCount}
-      </p>
+      {courseParts.map((part, index) => (
+        <div key={index}>
+          <h3>
+            {part.name} {part.exerciseCount}
+          </h3>
+
+          <Part part={part} />
+        </div>
+      ))}
     </div>
   );
 };
