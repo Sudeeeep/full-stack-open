@@ -6,6 +6,10 @@ const getPatientData = (): PatientDetails[] => {
   return patientData;
 };
 
+const getPatientDataById = (id: string): PatientsType | undefined => {
+  return patientData.find((patient) => patient.id === id);
+};
+
 const addPatient = (newPatientData: NewPatient): PatientsType => {
   const newPatient = {
     id: uuidv1(),
@@ -17,4 +21,4 @@ const addPatient = (newPatientData: NewPatient): PatientsType => {
   return newPatient;
 };
 
-export { getPatientData, addPatient };
+export { getPatientData, addPatient, getPatientDataById };
